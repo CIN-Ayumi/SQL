@@ -172,7 +172,7 @@ WHERE
     life_expectancy IS NOT null
 ORDER BY
     life_expectancy DESC,
-    indep_year ASC
+    indep_year DESC
 
 -- 問19
 -- 全ての国の国コードの一文字目と国名を表示させてください。
@@ -310,8 +310,8 @@ SELECT
 FROM
     celebrities
 WHERE
-    country_code IS NOT NULL
-GROUP BY
+  NOT country_code = ''
+GROUP BY 
     country_code
 HAVING MAX(age) >= 50
 AND MIN(age) <= 30
@@ -319,21 +319,24 @@ AND MIN(age) <= 30
 -- 問31
 -- 1991年生まれと、1981年生まれの有名人が何人いるか調べてください。ただし、日付関数は使用せず、UNION句を使用してください。
 SELECT
-    COUNT(
-        birth LIKE '1991%'
-    OR  NULL
-    ) AS 人数
+    SUBSTRING(birth, 1, 4) AS 誕生年,
+    COUNT(birth) AS 人数
 FROM
     celebrities
+WHERE
+    birth LIKE '1991%'
+GROUP BY
+    SUBSTRING(birth, 1, 4)
 UNION ALL
 SELECT
-    COUNT(
-        birth LIKE '1981%'
-    OR  NULL
-    ) AS 人数
+    SUBSTRING(birth, 1, 4) AS 誕生年,
+    COUNT(birth) AS 人数
 FROM
     celebrities
-
+WHERE
+    birth LIKE '1981%'
+GROUP BY
+    SUBSTRING(birth, 1, 4)
 
 -- 問32
 -- 有名人の出身国の平均年齢を高い方から順に表示してください。ただし、FROM句はcountriesテーブルとしてください。
